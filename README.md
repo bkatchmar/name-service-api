@@ -30,6 +30,8 @@ I was happy to see that this setup also came with my favorite npm package, React
 
 After the initial setup, I went ahead and started with the database. The requriement specified to use SQL Server in point 2. Therefore, I went ahead and opened up my SQL Server Management Studio and created a new database for this project. I will include all SQL needed to set this up in the `name-app\Data` folder that can be run once a database has been set up.
 
+There is an assumption that a database in SQL Server named `NAMES` is already set up and is empty.
+
 ## TableSetup.sql
 
 Initial SQL Script to be run first, this sets up the table.
@@ -49,3 +51,42 @@ Stored procedure designed to accomplish the following task
 - The second endpoint will return the GUID IDs of every profile that matches the name passed
   - If the value passed is a first name, then return the GUIDs of all records with the same first four characters of the first name
   - If the value passed is a last name, then return the GUIDs of all records with the same first four characters of the last name
+
+## Setting up Entity Framework
+
+To get entity framework on this and to get it to talk to SQL Server, first I needed to run this
+
+```
+dotnet add package Microsoft.EntityFrameworkCore.SqlServer
+```
+
+Afterwards I created the `Name.cs` file that acts like the context and the Model class. Within this context class, I added the call for the two stored procedures.
+
+# Service / API Development
+
+The service uses a lot of .NET Core's build in tools to help me with creating this application. Within the `Controllers` folder there is a `NameController.cs` class that will be our endpoint. This is where I use postman in order to help me debug each endpoint.
+
+## /name/getall
+
+Not in the requirements but I feel a `GetAll` is generally necessary.
+
+## /name/returnnameguid
+
+POST Command that takes in a Name object and runs it through the method to fulfill the requirement. The post request body will look like
+
+```
+{
+	"First" : "Rick",
+	"Last" : "Sanchez"
+}
+```
+
+This will return the GUID of the object it matches. The stoerd procedure actually will create the object and then return that object back.
+
+## /name/allguidsthatmatchname
+
+Takes in a mode telling us if we want to use a first name or last name, what the name is, and all GUIDs that match those parameters. Since this takes in two strings, I made this a GET request that takes in these parameters, an example of this looks like
+
+```
+/name/allguidsthatmatchname?mode=Last&name=Smith
+```
