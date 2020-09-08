@@ -90,3 +90,41 @@ Takes in a mode telling us if we want to use a first name or last name, what the
 ```
 /name/allguidsthatmatchname?mode=Last&name=Smith
 ```
+
+Alternatively we can just use these as params and not put them in the query string.
+
+# Front End Development
+
+My favorite thing about this sort of setup is how detached front end development can from the back end. The .NET Core development handles all server side handling, including communication with the database, but routing and front end rendering can be done completely in JavaScript via React. This way I can have front end specialist or those who primarily develop in JavaScript and have them work independent of the server side. With that said, I made a front end in React to satisfy the requirement of a front end.
+
+## NPM Installs Used
+
+Since ReactStrap and Bootstrap in general came out of the box when I first made this project, importing packages were not necessary except for one.
+
+```
+npm install axios --save
+```
+
+I prefer axios to the built in fetch library due to familiarity of axios and how I can potentially import this into another project and have it work right away. I like axios' flexibility as well, hence why I chose to install it as part of the project. It may be necessary for a first time use to `cd` into the ClientApp and run `npm install`.
+
+## About Each File
+
+### App.js
+
+Primary entry point into the Reach App. Defines routing that the front end will use.
+
+### api_call/CallApi.js
+
+Uses axios to call each of our end points that we defined previously.
+
+### components/Home.js
+
+Default route, I decided to list all names in the DB so far here in a Table
+
+### components/GetGuid.js
+
+Calls the end point that returns a GUID of the name provided, otherwise it will write the new object to the DB and then return that GUID. Some basic validation so we are not submitting blank data to the DB.
+
+### components/MathcingGuid.js
+
+Select a mode and type in a name to see all guids of the matchinf first 4 letters of the name. Mode selects if First name or Last name.
